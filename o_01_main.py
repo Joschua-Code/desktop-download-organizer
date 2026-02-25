@@ -28,6 +28,7 @@ def move_desktop():
 
     for src in desktop.iterdir():
         if src in desktop_not_to_move: continue
+        if src.name.lower() == "desktop.ini": continue
 
         move = get_path("de") / src.name
 
