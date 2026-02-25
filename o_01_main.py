@@ -22,16 +22,31 @@ def create_directorys():
     get_path("de").mkdir(parents=True, exist_ok=True) 
     get_path("do").mkdir(parents=True, exist_ok=True)
 
-#Put everything from desktop into Save\Desktop - if its already there it will append a (Number) to the name
-def move_desktop():
-    desktop = Path.home() / "Desktop"
-    desktop_not_to_move = {"thisonestays.txt"}
 
-    for src in desktop.iterdir():
-        if src in desktop_not_to_move: continue
+#Moves Private/Public/OneDrive Desktop files and moves them to there respective directories in the Save directory.
+def move():
+    #   private desktop
+    move_all((Path.home() / "Desktop"), get_path("de"))
+    #   public desktop
+    move_all((Path.home().parent / "Public" / "Desktop"), get_path("de"))
+    #   OneDrive desktop
+    one_drive_path = (Path.home() / "OneDrive" / "Desktop")
+    if one_drive_path.is_dir():
+        move_all((Path.home() / "OneDrive" / "Desktop"), get_path("de"))
+
+    #   downloads
+    move_all((Path.home() / "Downloads"), get_path("do"))
+
+
+#Put everything from src_folder to dest_folder. If its already there it will append a (Number) to the name.
+def move_all(src_folder: Path, dest_folder: Path) -> None:
+    not_to_move = {"thisonestays.txt"}
+
+    for src in src_folder.iterdir():
+        if src in not_to_move: continue
         if src.name.lower() == "desktop.ini": continue
 
-        move = get_path("de") / src.name
+        move = dest_folder / src.name
 
         for i in range(2, 100):
             if not move.exists():
@@ -44,39 +59,17 @@ def move_desktop():
                     src.rename(move)
                     break
 
-#Put everything from download into Save\Download
-def move_download():
-    download = Path.home() / "Downloads"
-    download_not_to_move = {"thisonestays.txt"}
 
-    for src in download.iterdir():
-        if src in download_not_to_move: continue
-
-        move = get_path("do") / src.name
-
-        for i in range(2, 100):
-            if not move.exists():
-                src.rename(move)
-                break
-            else:
-                src_adjusted = src.with_stem(f"{src.stem} ({i})")
-                move = get_path("do") / src_adjusted.name
-                if not move.exists():
-                    src.rename(move)
-                    break
-
+#Create an .exe
 
 #Check if there is already this exe in autostart if not copy it there
 
 #Create an Uninstaller.exe that checks if this is in autostart and if yes it deletes it otherwise it says there is nothing to uninstall
-
-#Create an .exe
 
 
 if __name__ == "__main__":
     create_directorys() 
 
     for i in range(5):
-        move_desktop()
-        move_download()
+        move()
         time.sleep(0.2)
