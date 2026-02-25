@@ -1,5 +1,6 @@
 from pathlib import Path
 import os
+import time
 
 
 def get_path(de_or_do):
@@ -74,5 +75,8 @@ def move_download():
 
 if __name__ == "__main__":
     create_directorys() 
-    move_desktop()
-    move_download()
+
+    for i in range(5):
+        move_desktop()
+        move_download()
+        time.sleep(0.2)
